@@ -199,12 +199,12 @@
         if (canUseNextTick()) {
             // For Node.js before 0.9
             installNextTickImplementation(attachTo);
-        } else if (canUsePostMessage()) {
-            // For non-IE10 modern browsers
-            installPostMessageImplementation(attachTo);
         } else if (canUseMessageChannel()) {
             // For web workers, where supported
             installMessageChannelImplementation(attachTo);
+        } else if (canUsePostMessage()) {
+            // For non-IE10 modern browsers
+            installPostMessageImplementation(attachTo);
         } else if (canUseReadyStateChange()) {
             // For IE 6–8
             installReadyStateChangeImplementation(attachTo);

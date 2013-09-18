@@ -95,7 +95,7 @@
     }
 
     function installNextTickImplementation(attachTo) {
-        attachTo.setImmediate = function () {
+        attachTo.setImmediate2 = function () {
             var handle = tasks.addFromSetImmediateArguments(arguments);
 
             process.nextTick(function () {
@@ -112,7 +112,7 @@
             var handle = event.data;
             tasks.runIfPresent(handle);
         };
-        attachTo.setImmediate = function () {
+        attachTo.setImmediate2 = function () {
             var handle = tasks.addFromSetImmediateArguments(arguments);
 
             channel.port2.postMessage(handle);
@@ -147,7 +147,7 @@
             global.attachEvent("onmessage", onGlobalMessage);
         }
 
-        attachTo.setImmediate = function () {
+        attachTo.setImmediate2 = function () {
             var handle = tasks.addFromSetImmediateArguments(arguments);
 
             // Make `global` post a message to itself with the handle and identifying prefix, thus asynchronously
@@ -159,7 +159,7 @@
     }
 
     function installReadyStateChangeImplementation(attachTo) {
-        attachTo.setImmediate = function () {
+        attachTo.setImmediate2 = function () {
             var handle = tasks.addFromSetImmediateArguments(arguments);
 
             // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
@@ -179,7 +179,7 @@
     }
 
     function installSetTimeoutImplementation(attachTo) {
-        attachTo.setImmediate = function () {
+        attachTo.setImmediate2 = function () {
             var handle = tasks.addFromSetImmediateArguments(arguments);
 
             global.setTimeout(function () {
@@ -190,7 +190,7 @@
         };
     }
 
-    if (!global.setImmediate) {
+
         // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
         var attachTo = typeof Object.getPrototypeOf === "function" && "setTimeout" in Object.getPrototypeOf(global) ?
                           Object.getPrototypeOf(global)
@@ -213,6 +213,6 @@
             installSetTimeoutImplementation(attachTo);
         }
 
-        attachTo.clearImmediate = tasks.remove;
-    }
+        attachTo.clearImmediate2 = tasks.remove;
+    
 }(typeof global === "object" && global ? global : this));

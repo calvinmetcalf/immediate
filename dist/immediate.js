@@ -203,8 +203,9 @@ require.relative = function(parent) {
 require.register("immediate/lib/index.js", function(exports, require, module){
 "use strict";
 var types = [
-    require("./realSetImmediate"),
+    //require("./realSetImmediate"),
     require("./nextTick"),
+    require("./mutation"),
     require("./postMessage"),
     require("./messageChannel"),
     require("./stateChange"),
@@ -214,13 +215,13 @@ var handlerQueue = [];
 
 function drainQueue() {
     var i = 0,
-        task;
-    /*jslint boss: true */
-    while (task = handlerQueue[i++]) {
-        task();
-    }
-
-    handlerQueue = [];
+        task,
+        innerQueue = handlerQueue;
+	handlerQueue = [];
+	/*jslint boss: true */
+	while (task = innerQueue[i++]) {
+		task();
+	}
 }
 var nextTick;
 types.some(function (obj) {
@@ -249,17 +250,19 @@ retFunc.clear = function (n) {
     return this;
 };
 module.exports = retFunc;
+
 });
 require.register("immediate/lib/realSetImmediate.js", function(exports, require, module){
 "use strict";
 var globe = require("./global");
 exports.test = function () {
-    return globe.setImmediate;
+    return  globe.setImmediate;
 };
 
 exports.install = function () {
     return globe.setImmediate.bind(globe);
 };
+
 });
 require.register("immediate/lib/nextTick.js", function(exports, require, module){
 "use strict";
@@ -366,6 +369,33 @@ exports.install = function (t) {
 });
 require.register("immediate/lib/global.js", function(exports, require, module){
 module.exports = typeof global === "object" && global ? global : this;
+});
+require.register("immediate/lib/mutation.js", function(exports, require, module){
+"use strict";
+//based off rsvp
+//https://github.com/tildeio/rsvp.js/blob/master/lib/rsvp/async.js
+var globe = require("./global");
+
+var MutationObserver = globe.MutationObserver || globe.WebKitMutationObserver;
+
+exports.test = function () {
+    return MutationObserver;
+};
+
+exports.install = function (handle) {
+    var observer = new MutationObserver(handle);
+    var element = globe.document.createElement("div");
+    observer.observe(element, { attributes: true });
+
+    // Chrome Memory Leak: https://bugs.webkit.org/show_bug.cgi?id=93661
+    globe.addEventListener("unload", function () {
+        observer.disconnect();
+        observer = null;
+    }, false);
+    return function () {
+        element.setAttribute("drainQueue", "drainQueue");
+    };
+};
 });
 require.alias("immediate/lib/index.js", "immediate/index.js");if (typeof exports == "object") {
   module.exports = require("immediate");

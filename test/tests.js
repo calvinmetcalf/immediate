@@ -92,3 +92,13 @@ test("big test", function (t) {
     }
     immediate(doStuff);
 });
+if (process.browser && typeof Worker !== 'undefined') {
+  test("worker", function (t) {
+    var worker = new Worker('./test/worker.js');
+    worker.onmessage = function (e) {
+      t.equal(e.data, 'pong');
+      t.end();
+    };
+    worker.postMessage('ping');
+  });
+}

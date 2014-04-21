@@ -94,11 +94,11 @@ test("big test", function (t) {
 });
 if (process.browser && typeof Worker !== 'undefined') {
   test("worker", function (t) {
-    var worker = new Worker('./worker.js');
-    worker.postmessage('ping');
-    worker.onmessage(function (e) {
-      t.equals(e.data, 'pong');
+    var worker = new Worker('./test/worker.js');
+    worker.onmessage = function (e) {
+      t.equal(e.data, 'pong');
       t.end();
-    });
+    };
+    worker.postMessage('ping');
   });
 }

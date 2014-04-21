@@ -1,8 +1,8 @@
-importScripts('../dist/immediate.');
-self.onmessage(function (e) {
+importScripts('../dist/immediate.js');
+self.onmessage =function (e) {
   if (e.data === 'ping') {
     immediate(function () {
-      self.postmessage('pong');
+      self.postMessage('pong');
     });
   }
-});
+};

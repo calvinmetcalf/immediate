@@ -80,7 +80,7 @@ test("does not interfere with handlers other than the one with ID passed to it",
 
 test("big test", function (t) {
     //mainly for optimizition testing
-    var i = 10;
+    var i = 1000;
     function doStuff() {
         i--;
         if(!i) {

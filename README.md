@@ -30,6 +30,8 @@ native implementations, this is the best option.
 Note that Internet Explorer 8 includes a synchronous version of `postMessage`. We detect this, or any other such
 synchronous implementation, and fall back to another trick.
 
+Also note that Internet Explorer 10 has a bug relating to [refusing to yield the queue](https://github.com/cujojs/when/issues/197) which effects setImmediate, postMessage and MessageChannel
+
 ### `MessageChannel`
 
 Unfortunately, `postMessage` has completely different semantics inside web workers, and so cannot be used there. So we

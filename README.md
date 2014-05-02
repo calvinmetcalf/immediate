@@ -1,20 +1,18 @@
+# immediate [![Build Status](https://travis-ci.org/calvinmetcalf/immediate.svg?branch=master)](https://travis-ci.org/calvinmetcalf/immediate)
+
 [![testling status](https://ci.testling.com/calvinmetcalf/immediate.png)](https://ci.testling.com/calvinmetcalf/immediate)
 
 ## Introduction
 
-**immediate.js** is a setImmediate polyfill, based on [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but stealing the best ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
+**immediate.js** is a microtask library, based on [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but stealing the best ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
 
-immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer from when to make a low latency polyfill.
+immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer from when.
+
+Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
 
 ## The Tricks
 
-### `setImmediate`
-Node.js has had a working version of setImmediate since version 0.9, so on Node.js we use that. But in Internet Explorer 10 which has a broken version of setImmediate we avoid using this.
-
 ### `process.nextTick`
-
-In Node.js versions below 0.9, `setImmediate` is not available, but [`process.nextTick`][nextTick] is, so we use it to
-shim support for a global `setImmediate`. In Node.js 0.9 and above, `setImmediate` is available.
 
 Note that we check for *actual* Node.js environments, not emulated ones like those produced by browserify or similar.
 Such emulated environments often already include a `process.nextTick` shim that's not as browser-compatible as
@@ -34,6 +32,8 @@ native implementations, this is the best option.
 Note that Internet Explorer 8 includes a synchronous version of `postMessage`. We detect this, or any other such
 synchronous implementation, and fall back to another trick.
 
+Also note that Internet Explorer 10 has a bug relating to [refusing to yield the queue](https://github.com/cujojs/when/issues/197) which effects setImmediate, postMessage and MessageChannel
+
 ### `MessageChannel`
 
 Unfortunately, `postMessage` has completely different semantics inside web workers, and so cannot be used there. So we
@@ -44,6 +44,11 @@ turn to [`MessageChannel`][MessageChannel], which has worse browser support, but
 For our last trick, we pull something out to make things fast in Internet Explorer versions 6 through 8: namely,
 creating a `<script>` element and firing our calls in its `onreadystatechange` event. This does execute in a future
 turn of the event loop, and is also faster than `setTimeout(…, 0)`, so hey, why not?
+
+## Tricks we don't use
+
+### `setImmediate`
+We avoid this process.nextTick in node is better suited to our needs and in Internet Explorer 10 there is a broken version of setImmediate we avoid using this.
 
 ## Usage
 

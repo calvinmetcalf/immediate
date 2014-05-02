@@ -15,11 +15,8 @@ var types = [
 ];
 var handlerQueue = [];
 function drainQueue() {
-  var i = 0,
-  task,
-  innerQueue = handlerQueue;
-  handlerQueue = [];
-  while ((task = innerQueue[i++])) {
+  var task;
+  while ((task = handlerQueue.shift())) {
     task();
   }
 }
@@ -62,6 +59,11 @@ module.exports.clear = function (n) {
 'use strict';
 
 exports.test = function () {
+  if (global.setImmediate) {
+    // we can only get here in IE10
+    // which doesn't handel postMessage well
+    return false;
+  }
   return typeof global.MessageChannel !== 'undefined';
 };
 
@@ -108,7 +110,11 @@ exports.test = function () {
   if (!global.postMessage || global.importScripts) {
     return false;
   }
-
+  if (global.setImmediate) {
+    // we can only get here in IE10
+    // which doesn't handel postMessage well
+    return false;
+  }
   var postMessageIsAsynchronous = true;
   var oldOnMessage = global.onmessage;
   global.onmessage = function () {

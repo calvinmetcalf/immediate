@@ -13,7 +13,8 @@ var types = [
   _dereq_('./stateChange'),
   _dereq_('./timeout')
 ];
-var handlerQueue = [];
+var Queue = _dereq_('./queue');
+var handlerQueue = new Queue(1024);
 function drainQueue() {
   var task;
   while ((task = handlerQueue.shift())) {
@@ -30,7 +31,7 @@ while (++ i < len) {
   }
 }
 module.exports = function (task) {
-  var len, i, args;
+  var i, args;
   var nTask = task;
   if (arguments.length > 1 && typeof task === 'function') {
     args = new Array(arguments.length - 1);
@@ -42,19 +43,12 @@ module.exports = function (task) {
       task.apply(undefined, args);
     };
   }
-  if ((len = handlerQueue.push(nTask)) === 1) {
+  if (handlerQueue.push(nTask) === 1) {
     nextTick(drainQueue);
   }
-  return len;
-};
-module.exports.clear = function (n) {
-  if (n <= handlerQueue.length) {
-    handlerQueue[n - 1] = function () {};
-  }
-  return this;
 };
 
-},{"./messageChannel":3,"./mutation":4,"./nextTick":1,"./postMessage":5,"./stateChange":6,"./timeout":7}],3:[function(_dereq_,module,exports){
+},{"./messageChannel":3,"./mutation":4,"./nextTick":1,"./postMessage":5,"./queue":6,"./stateChange":7,"./timeout":8}],3:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -144,6 +138,119 @@ exports.install = function (func) {
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],6:[function(_dereq_,module,exports){
+// modified version of the queue from asap
+// https://github.com/kriskowal/asap/blob/master/queue.js
+// licence https://github.com/kriskowal/asap/blob/master/LICENSE.md
+
+'use strict';
+
+module.exports = Queue;
+function Queue(capacity) {
+  this.capacity = this.snap(capacity);
+  this.length = 0;
+  this.front = 0;
+  this.initialize();
+}
+
+Queue.prototype.push = function (value) {
+  var length = this.length;
+  if (this.capacity <= length) {
+    this.grow(this.snap(this.capacity * this.growFactor));
+  }
+  var index = (this.front + length) & (this.capacity - 1);
+  this[index] = value;
+  this.length = length + 1;
+  return this.length;
+};
+
+Queue.prototype.shift = function () {
+  var front = this.front;
+  var result = this[front];
+
+  this[front] = void 0;
+  if (this.length) {
+    this.length--;
+    this.front = (front + 1) & (this.capacity - 1);
+  } else {
+    this.front = 0;
+  }
+
+  return result;
+};
+
+Queue.prototype.grow = function (capacity) {
+  var oldFront = this.front;
+  var oldCapacity = this.capacity;
+  var oldQueue = new Array(oldCapacity);
+  var length = this.length;
+
+  copy(this, 0, oldQueue, 0, oldCapacity);
+  this.capacity = capacity;
+  this.initialize();
+  this.front = 0;
+  if (oldFront + length <= oldCapacity) {
+    // Can perform direct linear copy
+    copy(oldQueue, oldFront, this, 0, length);
+  } else {
+    // Cannot perform copy directly, perform as much as possible at the
+    // end, and then copy the rest to the beginning of the buffer
+    var lengthBeforeWrapping =
+      length - ((oldFront + length) & (oldCapacity - 1));
+    copy(
+      oldQueue,
+      oldFront,
+      this,
+      0,
+      lengthBeforeWrapping
+    );
+    copy(
+      oldQueue,
+      0,
+      this,
+      lengthBeforeWrapping,
+      length - lengthBeforeWrapping
+    );
+  }
+};
+
+Queue.prototype.initialize = function () {
+  var length = this.capacity;
+  for (var i = 0; i < length; ++i) {
+    this[i] = void 0;
+  }
+};
+
+Queue.prototype.snap = function (capacity) {
+  if (typeof capacity !== 'number') {
+    return this.minCapacity;
+  }
+  return pow2AtLeast(
+    Math.min(this.maxCapacity, Math.max(this.minCapacity, capacity))
+  );
+};
+
+Queue.prototype.maxCapacity = (1 << 30) | 0;
+Queue.prototype.minCapacity = 16;
+Queue.prototype.growFactor = 8;
+
+function copy(source, sourceIndex, target, targetIndex, length) {
+  for (var index = 0; index < length; ++index) {
+    target[index + targetIndex] = source[index + sourceIndex];
+  }
+}
+
+function pow2AtLeast(n) {
+  n = n >>> 0;
+  n = n - 1;
+  n = n | (n >> 1);
+  n = n | (n >> 2);
+  n = n | (n >> 4);
+  n = n | (n >> 8);
+  n = n | (n >> 16);
+  return n + 1;
+}
+
+},{}],7:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -170,7 +277,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(_dereq_,module,exports){
+},{}],8:[function(_dereq_,module,exports){
 'use strict';
 exports.test = function () {
   return true;

@@ -16,9 +16,11 @@ var types = [
 var handlerQueue = [];
 function drainQueue() {
   var task;
-  while ((task = handlerQueue.shift())) {
+  var i = -1;
+  while ((task = handlerQueue[++i])) {
     task();
   }
+  handlerQueue = [];
 }
 var nextTick;
 var i = -1;

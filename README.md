@@ -53,8 +53,7 @@ We avoid this process.nextTick in node is better suited to our needs and in Inte
 ## Usage
 
 In the browser, include it with a `<script>` tag; pretty simple. Creates a global
-called `immediate` which should act like setImmediate. It also has a method called
-`clear` which should act like `clearImmediate`.
+called `immediate` which should act like setImmediate.
 
 In Node.js, do
 

@@ -1,37 +1,40 @@
 !function(e){if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.immediate=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
-exports.test = function () {
-  return false;
-};
-},{}],2:[function(_dereq_,module,exports){
-'use strict';
 var types = [
   _dereq_('./nextTick'),
-  _dereq_('./mutation'),
   _dereq_('./postMessage'),
   _dereq_('./messageChannel'),
   _dereq_('./stateChange'),
   _dereq_('./timeout')
 ];
-var handlerQueue = [];
+var draining;
+var queue = [];
 function drainQueue() {
-  var task;
-  var i = -1;
-  while ((task = handlerQueue[++i])) {
-    task();
+  draining = true;
+  var i, oldQueue;
+  var len = queue.length;
+  while (len) {
+    oldQueue = queue;
+    queue = [];
+    i = -1;
+    while (++i < len) {
+      oldQueue[i]();
+    }
+    len = queue.length;
   }
-  handlerQueue = [];
+  draining = false;
 }
-var nextTick;
+var scheduleDrain;
 var i = -1;
 var len = types.length;
 while (++ i < len) {
   if (types[i].test()) {
-    nextTick = types[i].install(drainQueue);
+    scheduleDrain = types[i].install(drainQueue);
     break;
   }
 }
-module.exports = function (task) {
+module.exports = immediate;
+function immediate(task) {
   var len, i, args;
   var nTask = task;
   if (arguments.length > 1 && typeof task === 'function') {
@@ -44,19 +47,19 @@ module.exports = function (task) {
       task.apply(undefined, args);
     };
   }
-  if ((len = handlerQueue.push(nTask)) === 1) {
-    nextTick(drainQueue);
+  if ((len = queue.push(nTask)) === 1 && !draining) {
+    scheduleDrain();
   }
   return len;
-};
+}
 module.exports.clear = function (n) {
-  if (n <= handlerQueue.length) {
-    handlerQueue[n - 1] = function () {};
+  if (n <= queue.length) {
+    queue[n - 1] = function () {};
   }
   return this;
 };
 
-},{"./messageChannel":3,"./mutation":4,"./nextTick":1,"./postMessage":5,"./stateChange":6,"./timeout":7}],3:[function(_dereq_,module,exports){
+},{"./messageChannel":2,"./nextTick":3,"./postMessage":4,"./stateChange":5,"./timeout":6}],2:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -77,7 +80,7 @@ exports.install = function (func) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(_dereq_,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 //based off rsvp https://github.com/tildeio/rsvp.js
@@ -102,7 +105,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(_dereq_,module,exports){
+},{}],4:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 // The test against `importScripts` prevents this implementation from being installed inside a web worker,
@@ -145,7 +148,7 @@ exports.install = function (func) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -172,7 +175,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 'use strict';
 exports.test = function () {
   return true;
@@ -183,6 +186,6 @@ exports.install = function (t) {
     setTimeout(t, 0);
   };
 };
-},{}]},{},[2])
-(2)
+},{}]},{},[1])
+(1)
 });

@@ -1,6 +1,6 @@
 {
   "name": "immediate",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "A cross browser microtask library",
   "homepage": "https://github.com/calvinmetcalf/immediate",
   "authors": [

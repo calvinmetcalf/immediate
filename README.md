@@ -22,17 +22,6 @@ setImmediate.js.
 
 This is what [RSVP][RSVP] uses, it's very fast, details on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
 
-### `postMessage`
-
-In Firefox 3+, Internet Explorer 9+, all modern WebKit browsers, and Opera 9.5+, [`postMessage`][postMessage] is
-available and provides a good way to queue tasks on the event loop. It's quite the abuse, using a cross-document
-messaging protocol within the same document simply to get access to the event loop task queue, but until there are
-native implementations, this is the best option.
-
-Note that Internet Explorer 8 includes a synchronous version of `postMessage`. We detect this, or any other such
-synchronous implementation, and fall back to another trick.
-
-Also note that Internet Explorer 10 has a bug relating to [refusing to yield the queue](https://github.com/cujojs/when/issues/197) which effects setImmediate, postMessage and MessageChannel
 
 ### `MessageChannel`
 
@@ -50,11 +39,6 @@ turn of the event loop, and is also faster than `setTimeout(…, 0)`, so hey, wh
 ### `setImmediate`
 We avoid this process.nextTick in node is better suited to our needs and in Internet Explorer 10 there is a broken version of setImmediate we avoid using this.
 
-## Usage
-
-In the browser, include it with a `<script>` tag; pretty simple. Creates a global
-called `immediate` which should act like setImmediate. It also has a method called
-`clear` which should act like `clearImmediate`.
 
 In Node.js, do
 
@@ -67,8 +51,6 @@ then
 ```js
 var immediate = require("immediate");
 ```
-
-somewhere early in your app; it attaches to the global.
 
  
 ## Reference and Reading

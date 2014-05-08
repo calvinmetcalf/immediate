@@ -4,9 +4,9 @@
 
 ## Introduction
 
-**immediate.js** is a microtask library, based on [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but stealing the best ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
+**immediate.js** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
 
-immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer from when.
+immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer inspired (vaugly) by whens.
 
 Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
 
@@ -15,12 +15,10 @@ Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not
 ### `process.nextTick`
 
 Note that we check for *actual* Node.js environments, not emulated ones like those produced by browserify or similar.
-Such emulated environments often already include a `process.nextTick` shim that's not as browser-compatible as
-setImmediate.js.
 
 ### `MutationObserver`
 
-This is what [RSVP][RSVP] uses, it's very fast, details on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+This is what [RSVP][RSVP] uses, it's very fast, details on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
 
 
 ### `MessageChannel`

@@ -2,7 +2,6 @@
 'use strict';
 var types = [
   _dereq_('./nextTick'),
-  _dereq_('./postMessage'),
   _dereq_('./messageChannel'),
   _dereq_('./stateChange'),
   _dereq_('./timeout')
@@ -35,31 +34,11 @@ while (++ i < len) {
 }
 module.exports = immediate;
 function immediate(task) {
-  var len, i, args;
-  var nTask = task;
-  if (arguments.length > 1 && typeof task === 'function') {
-    args = new Array(arguments.length - 1);
-    i = 0;
-    while (++i < arguments.length) {
-      args[i - 1] = arguments[i];
-    }
-    nTask = function () {
-      task.apply(undefined, args);
-    };
-  }
-  if ((len = queue.push(nTask)) === 1 && !draining) {
+  if (queue.push(task) === 1 && !draining) {
     scheduleDrain();
   }
-  return len;
 }
-module.exports.clear = function (n) {
-  if (n <= queue.length) {
-    queue[n - 1] = function () {};
-  }
-  return this;
-};
-
-},{"./messageChannel":2,"./nextTick":3,"./postMessage":4,"./stateChange":5,"./timeout":6}],2:[function(_dereq_,module,exports){
+},{"./messageChannel":2,"./nextTick":3,"./stateChange":4,"./timeout":5}],2:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -108,49 +87,6 @@ exports.install = function (handle) {
 },{}],4:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
-// The test against `importScripts` prevents this implementation from being installed inside a web worker,
-// where `global.postMessage` means something completely different and can't be used for this purpose.
-
-exports.test = function () {
-  if (!global.postMessage || global.importScripts) {
-    return false;
-  }
-  if (global.setImmediate) {
-    // we can only get here in IE10
-    // which doesn't handel postMessage well
-    return false;
-  }
-  var postMessageIsAsynchronous = true;
-  var oldOnMessage = global.onmessage;
-  global.onmessage = function () {
-    postMessageIsAsynchronous = false;
-  };
-  global.postMessage('', '*');
-  global.onmessage = oldOnMessage;
-
-  return postMessageIsAsynchronous;
-};
-
-exports.install = function (func) {
-  var codeWord = 'com.calvinmetcalf.setImmediate' + Math.random();
-  function globalMessage(event) {
-    if (event.source === global && event.data === codeWord) {
-      func();
-    }
-  }
-  if (global.addEventListener) {
-    global.addEventListener('message', globalMessage, false);
-  } else {
-    global.attachEvent('onmessage', globalMessage);
-  }
-  return function () {
-    global.postMessage(codeWord, '*');
-  };
-};
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(_dereq_,module,exports){
-(function (global){
-'use strict';
 
 exports.test = function () {
   return 'document' in global && 'onreadystatechange' in global.document.createElement('script');
@@ -175,7 +111,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 exports.test = function () {
   return true;

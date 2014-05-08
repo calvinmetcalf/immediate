@@ -1,6 +1,6 @@
 {
   "name": "immediate",
-  "version": "2.7.2",
+  "version": "3.0.0",
   "description": "A cross browser microtask library",
   "contributors": [
     "Domenic Denicola <domenic@domenicdenicola.com> (http://domenicdenicola.com)",

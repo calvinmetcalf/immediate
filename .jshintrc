@@ -8,6 +8,7 @@
     "newcap": true,
     "noarg": true,
     "node": true,
+    "browser": true,
     "nonew": true,
     "nomen": true,
     "quotmark": "single",

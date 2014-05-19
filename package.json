@@ -27,7 +27,7 @@
     "url": "git://github.com/calvinmetcalf/immediate.git"
   },
   "browser": {
-    "./lib/nextTick.js": "./lib/mutation.js"
+    "./lib/nextTick.js": false
   },
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
   "main": "lib/index.js",

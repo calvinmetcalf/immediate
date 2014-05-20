@@ -39,7 +39,7 @@ function immediate(task) {
     scheduleDrain();
   }
 }
-},{"./messageChannel":2,"./mutation.js":3,"./nextTick":4,"./stateChange":5,"./timeout":6}],2:[function(_dereq_,module,exports){
+},{"./messageChannel":2,"./mutation.js":3,"./nextTick":6,"./stateChange":4,"./timeout":5}],2:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -86,20 +86,6 @@ exports.install = function (handle) {
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(_dereq_,module,exports){
-(function (process){
-'use strict';
-exports.test = function () {
-  // Don't get fooled by e.g. browserify environments.
-  return process && !process.browser;
-};
-
-exports.install = function (func) {
-  return function () {
-    process.nextTick(func);
-  };
-};
-}).call(this,_dereq_("FWaASH"))
-},{"FWaASH":7}],5:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -126,7 +112,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],6:[function(_dereq_,module,exports){
+},{}],5:[function(_dereq_,module,exports){
 'use strict';
 exports.test = function () {
   return true;
@@ -137,70 +123,7 @@ exports.install = function (t) {
     setTimeout(t, 0);
   };
 };
-},{}],7:[function(_dereq_,module,exports){
-// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            var source = ev.source;
-            if ((source === window || source === null) && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
+},{}],6:[function(_dereq_,module,exports){
 
 },{}]},{},[1])
 (1)

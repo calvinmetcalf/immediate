@@ -44,3 +44,28 @@ if (process.browser && typeof Worker !== 'undefined') {
     worker.postMessage('ping');
   });
 }
+
+test('test errors', function (t) {
+  t.plan(7);
+  var order = 0;
+  process.once('uncaughtException', function(err) {
+      t.ok(true, err.message);
+      t.equals(2, order++, 'error is third');
+      immediate(function () {
+        t.equals(5, order++, 'schedualed in error is last');
+      });
+  });
+  immediate(function () {
+    t.equals(0, order++, 'first one works');
+    immediate(function () {
+      t.equals(4, order++, 'recursive one is 4th');
+    });
+  });
+  immediate(function () {
+    t.equals(1, order++, 'second one starts');
+    throw(new Error('an error is thrown'));
+  });
+  immediate(function () {
+    t.equals(3, order++, '3rd schedualed happens after the error');
+  });
+});

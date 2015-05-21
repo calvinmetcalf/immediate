@@ -2,13 +2,33 @@
 
 [![testling status](https://ci.testling.com/calvinmetcalf/immediate.png)](https://ci.testling.com/calvinmetcalf/immediate)
 
+```
+npm install immediate --save
+```
+
+then
+
+```js
+var immediate = require("immediate");
+
+immediate(function () {
+  // this will run soon
+});
+
+immediate(function (arg1, arg2) {
+  // get your args like in iojs
+}, thing1, thing2);
+```
+
 ## Introduction
 
-**immediate.js** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
+**immediate** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
 
 immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer inspired (vaugly) by whens.
 
 Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
+
+
 
 ## The Tricks
 
@@ -38,19 +58,6 @@ turn of the event loop, and is also faster than `setTimeout(…, 0)`, so hey, wh
 We avoid this process.nextTick in node is better suited to our needs and in Internet Explorer 10 there is a broken version of setImmediate we avoid using this.
 
 
-In Node.js, do
-
-```
-npm install immediate
-```
-
-then
-
-```js
-var immediate = require("immediate");
-```
-
- 
 ## Reference and Reading
 
  * [Efficient Script Yielding W3C Editor's Draft][spec]

@@ -55,12 +55,12 @@ test('test errors', function (t) {
         t.equals(5, order++, 'schedualed in error is last');
       });
   });
-  immediate(function () {
-    t.equals(0, order++, 'first one works');
-    immediate(function () {
-      t.equals(4, order++, 'recursive one is 4th');
-    });
-  });
+  immediate(function (num1, num2) {
+    t.equals(num1, order++, 'first one works');
+    immediate(function (num) {
+      t.equals(num, order++, 'recursive one is 4th');
+    }, num2);
+  }, 0, 4);
   immediate(function () {
     t.equals(1, order++, 'second one starts');
     throw(new Error('an error is thrown'));

@@ -34,14 +34,15 @@
   "scripts": {
     "build": "npm run build-js && npm run uglify",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
-    "build-js": "browserify -s immediate ./lib/index.js > dist/immediate.js",
+    "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
     "test": "jshint lib/*.js && node test/tests.js | tspec"
   },
   "devDependencies": {
     "browserify": "^10.0.0",
+    "derequire": "^2.0.0",
     "jshint": "^2.5.1",
     "tap-spec": "^3.0.0",
-    "uglify-js": "^2.4.13",
-    "tape": "^4.0.0"
+    "tape": "^4.0.0",
+    "uglify-js": "^2.4.13"
   }
 }

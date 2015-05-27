@@ -34,7 +34,7 @@
   "scripts": {
     "build": "npm run build-js && npm run uglify",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
-    "build-js": "browserify -s immediate ./lib/index.js > dist/immediate.js",
+    "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
     "test": "jshint lib/*.js && node test/tests.js && browserify test/tests.js | testling"
   },
   "devDependencies": {
@@ -43,5 +43,8 @@
     "jshint": "^2.5.1",
     "browserify": "^10.0.0",
     "testling": "^1.6.1"
+  },
+  "dependencies": {
+    "derequire": "^2.0.0"
   }
 }

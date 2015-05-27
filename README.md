@@ -28,7 +28,9 @@ immediate takes the tricks from setImmedate and RSVP and combines them with the 
 
 Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
 
-
+Several new features were added in versions 3.1.0 and 3.2.0 to maintain parity with
+process.nextTick, but the 3.0.x series is still being kept up to date if you just need
+the small barebones version
 
 ## The Tricks
 

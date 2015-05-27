@@ -1,6 +1,6 @@
 {
   "name": "immediate",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "A cross browser microtask library",
   "contributors": [
     "Domenic Denicola <domenic@domenicdenicola.com> (http://domenicdenicola.com)",
@@ -34,17 +34,15 @@
   "scripts": {
     "build": "npm run build-js && npm run uglify",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
-    "build-js": "browserify -s immediate ./lib/index.js > dist/immediate.js",
+    "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
     "test": "jshint lib/*.js && node test/tests.js && browserify test/tests.js | testling"
-  },
-  "jam": {
-    "main": "dist/immediate.js"
   },
   "devDependencies": {
     "uglify-js": "^2.4.13",
     "tape": "^2.13.1",
     "jshint": "^2.5.1",
-    "browserify": "^4.1.5",
-    "testling": "^1.6.1"
+    "browserify": "^10.0.0",
+    "testling": "^1.6.1",
+    "derequire": "^2.0.0"
   }
 }

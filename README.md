@@ -2,13 +2,36 @@
 
 [![testling status](https://ci.testling.com/calvinmetcalf/immediate.png)](https://ci.testling.com/calvinmetcalf/immediate)
 
+```
+npm install immediate --save
+```
+
+then
+
+```js
+var immediate = require("immediate");
+
+immediate(function () {
+  // this will run soon
+});
+
+immediate(function (arg1, arg2) {
+  // get your args like in iojs
+}, thing1, thing2);
+```
+
 ## Introduction
 
-**immediate.js** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
+**immediate** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
 
 immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer inspired (vaugly) by whens.
 
 Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
+
+Several new features were added in versions 3.1.0 and 3.2.0 to maintain parity with
+process.nextTick, but the 3.0.x series is still being kept up to date if you just need
+the small barebones version.
+
 
 ## The Tricks
 
@@ -50,7 +73,7 @@ then
 var immediate = require("immediate");
 ```
 
- 
+
 ## Reference and Reading
 
  * [Efficient Script Yielding W3C Editor's Draft][spec]

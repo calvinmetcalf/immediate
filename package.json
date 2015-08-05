@@ -26,8 +26,11 @@
     "type": "git",
     "url": "git://github.com/calvinmetcalf/immediate.git"
   },
-  "browser": {
-    "./nextTick": false
+  "browserify": {
+    "transform": [
+      "inline-process-browser",
+      "unreachable-branch-transform"
+    ]
   },
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
   "main": "lib/index.js",
@@ -44,5 +47,9 @@
     "browserify": "^10.0.0",
     "testling": "^1.6.1",
     "derequire": "^2.0.0"
+  },
+  "dependencies": {
+    "inline-process-browser": "^1.0.0",
+    "unreachable-branch-transform": "^0.3.0"
   }
 }

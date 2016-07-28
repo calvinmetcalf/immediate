@@ -8,48 +8,35 @@
     "Yaffle",
     "Calvin Metcalf <calvin.metcalf@gmail.com>"
   ],
-  "testling": {
-    "files": "test/tests.js",
-    "browsers": [
-      "ie/6..latest",
-      "chrome/latest",
-      "firefox/3..latest",
-      "opera/10..latest",
-      "safari/4..latest",
-      "iphone/latest",
-      "ipad/latest",
-      "android-browser/latest"
-    ]
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/calvinmetcalf/immediate.git"
   },
-  "browserify": {
-    "transform": [
-      "inline-process-browser",
-      "unreachable-branch-transform"
-    ]
-  },
+  "files": [
+    "lib",
+    "dist"
+  ],
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
   "main": "lib/index.js",
   "scripts": {
-    "build": "npm run build-js && npm run uglify",
+    "build": "npm run build-node && npm run build-js && npm run uglify",
+    "build-node": "browserify-transform-cli inline-process-browser unreachable-branch-transform < ./lib/index.js > ./lib/browser.js",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
-    "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
-    "test": "jshint lib/*.js && node test/tests.js && browserify test/tests.js | testling"
+    "build-js": "browserify -s immediate ./lib/browser.js | derequire > dist/immediate.js",
+    "test": "jshint lib/*.js && node test/tests.js"
+  },
+  "browser": {
+    "./lib/index.js": "./lib/browser.js"
   },
   "devDependencies": {
-    "uglify-js": "^2.4.13",
-    "tape": "^2.13.1",
+    "browserify": "^13.0.0",
+    "browserify-transform-cli": "^1.1.1",
+    "derequire": "^2.0.0",
+    "inline-process-browser": "^2.0.0",
     "jshint": "^2.5.1",
-    "browserify": "^10.0.0",
-    "testling": "^1.6.1",
-    "derequire": "^2.0.0"
-  },
-  "dependencies": {
-    "inline-process-browser": "^1.0.0",
-    "unreachable-branch-transform": "^0.3.0"
+    "tape": "^4.0.0",
+    "uglify-js": "^2.4.13",
+    "unreachable-branch-transform": "^0.5.1"
   }
 }

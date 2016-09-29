@@ -22,9 +22,9 @@ immediate(function (arg1, arg2) {
 
 ## Introduction
 
-**immediate** is a microtask library, decended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
+**immediate** is a microtask library, descended from [NobleJS's setImmediate](https://github.com/NobleJS/setImmediate), but including ideas from [Cujo's When](https://github.com/cujojs/when) and [RSVP][RSVP].
 
-immediate takes the tricks from setImmedate and RSVP and combines them with the schedualer inspired (vaugly) by whens.
+immediate takes the tricks from setImmediate and RSVP and combines them with the scheduler inspired (vaguely) by when's.
 
 Note versions 2.6.5 and earlier were strictly speaking a 'macrotask' library not a microtask one, [see this for the difference](https://github.com/YuzuJS/setImmediate#macrotasks-and-microtasks), if you need a macrotask library, [I got you covered](https://github.com/calvinmetcalf/macrotask).
 
@@ -57,7 +57,7 @@ turn of the event loop, and is also faster than `setTimeout(…, 0)`, so hey, wh
 ## Tricks we don't use
 
 ### `setImmediate`
-We avoid this process.nextTick in node is better suited to our needs and in Internet Explorer 10 there is a broken version of setImmediate we avoid using this.
+We avoid using `setImmediate` because node's `process.nextTick` is better suited to our needs. Additionally, Internet Explorer 10's implementation of `setImmediate` is broken.
 
 
 ## Reference and Reading
@@ -66,7 +66,7 @@ We avoid this process.nextTick in node is better suited to our needs and in Inte
  * [W3C mailing list post introducing the specification][list-post]
  * [IE Test Drive demo][ie-demo]
  * [Introductory blog post by Nicholas C. Zakas][ncz]
- * I wrote a couple blog pots on this, [part 1][my-blog-1] and [part 2][my-blog-2]
+ * I wrote a couple of blog posts on this, [part 1][my-blog-1] and [part 2][my-blog-2]
 
 [RSVP]: https://github.com/tildeio/rsvp.js
 [spec]: https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/setImmediate/Overview.html

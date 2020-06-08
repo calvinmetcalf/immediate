@@ -38,6 +38,10 @@ the small barebones version
 
 Note that we check for *actual* Node.js environments, not emulated ones like those produced by browserify or similar.
 
+### `queueMicrotask`
+
+Function available in major browser these days which you can use to add a function into the microtask queue managed by V8.
+
 ### `MutationObserver`
 
 This is what [RSVP][RSVP] uses, it's very fast, details on [MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).

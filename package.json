@@ -27,7 +27,7 @@
     "url": "git://github.com/calvinmetcalf/immediate.git"
   },
   "browser": {
-    "./nextTick": false
+    "./lib/nextTick": false
   },
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
   "main": "lib/index.js",
@@ -38,10 +38,10 @@
     "test": "jshint lib/*.js && node test/tests.js | tspec"
   },
   "devDependencies": {
-    "browserify": "^10.0.0",
-    "derequire": "^2.0.0",
+    "browserify": "^16.5.1",
+    "derequire": "^2.1.1",
     "jshint": "^2.5.1",
-    "tap-spec": "^3.0.0",
+    "tap-spec": "^5.0.0",
     "tape": "^4.0.0",
     "uglify-js": "^2.4.13"
   }

@@ -1,7 +1,8 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.immediate = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.immediate = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(_dereq_,module,exports){
 'use strict';
 var types = [
   _dereq_('./nextTick'),
+  _dereq_('./queueMicrotask'),
   _dereq_('./mutation.js'),
   _dereq_('./messageChannel'),
   _dereq_('./stateChange'),
@@ -13,8 +14,11 @@ var queueIndex = -1;
 var queue = [];
 var scheduled = false;
 function cleanUpNextTick() {
+  if (!draining || !currentQueue) {
+    return;
+  }
   draining = false;
-  if (currentQueue && currentQueue.length) {
+  if (currentQueue.length) {
     queue = currentQueue.concat(queue);
   } else {
     queueIndex = -1;
@@ -26,6 +30,9 @@ function cleanUpNextTick() {
 
 //named nextTick for less confusing stack traces
 function nextTick() {
+  if (draining) {
+    return;
+  }
   scheduled = false;
   draining = true;
   var len = queue.length;
@@ -33,12 +40,13 @@ function nextTick() {
   while (len) {
     currentQueue = queue;
     queue = [];
-    while (++queueIndex < len) {
+    while (currentQueue && ++queueIndex < len) {
       currentQueue[queueIndex].run();
     }
     queueIndex = -1;
     len = queue.length;
   }
+  currentQueue = null;
   queueIndex = -1;
   draining = false;
   clearTimeout(timeout);
@@ -58,7 +66,21 @@ function Item(fun, array) {
   this.array = array;
 }
 Item.prototype.run = function () {
-  this.fun.apply(null, this.array);
+  var fun = this.fun;
+  var array = this.array;
+  switch (array.length) {
+  case 0:
+    return fun();
+  case 1:
+    return fun(array[0]);
+  case 2:
+    return fun(array[0], array[1]);
+  case 3:
+    return fun(array[0], array[1], array[2]);
+  default:
+    return fun.apply(null, array);
+  }
+
 };
 module.exports = immediate;
 function immediate(task) {
@@ -75,7 +97,7 @@ function immediate(task) {
   }
 }
 
-},{"./messageChannel":2,"./mutation.js":3,"./nextTick":6,"./stateChange":4,"./timeout":5}],2:[function(_dereq_,module,exports){
+},{"./messageChannel":2,"./mutation.js":3,"./nextTick":7,"./queueMicrotask":4,"./stateChange":5,"./timeout":6}],2:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
 
@@ -124,6 +146,20 @@ exports.install = function (handle) {
 },{}],4:[function(_dereq_,module,exports){
 (function (global){
 'use strict';
+exports.test = function () {
+  return typeof global.queueMicrotask === 'function';
+};
+
+exports.install = function (func) {
+  return function () {
+    global.queueMicrotask(func);
+  };
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],5:[function(_dereq_,module,exports){
+(function (global){
+'use strict';
 
 exports.test = function () {
   return 'document' in global && 'onreadystatechange' in global.document.createElement('script');
@@ -148,7 +184,7 @@ exports.install = function (handle) {
   };
 };
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(_dereq_,module,exports){
+},{}],6:[function(_dereq_,module,exports){
 'use strict';
 exports.test = function () {
   return true;
@@ -159,7 +195,7 @@ exports.install = function (t) {
     setTimeout(t, 0);
   };
 };
-},{}],6:[function(_dereq_,module,exports){
+},{}],7:[function(_dereq_,module,exports){
 
 },{}]},{},[1])(1)
 });

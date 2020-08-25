@@ -26,21 +26,26 @@
     "type": "git",
     "url": "git://github.com/calvinmetcalf/immediate.git"
   },
-  "browser": {
-    "./lib/nextTick": false
-  },
+  "browser": "dist/immediate.browser.js",
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
-  "main": "lib/index.js",
+  "main": "dist/immediate.node.js",
   "scripts": {
     "build": "npm run build-js && npm run uglify",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
     "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
-    "test": "jshint lib/*.js && node test/tests.js | tspec"
+    "test": "jshint lib/*.js && node test/tests.js | tspec",
+    "build-umd": "IMMEDIATE_ENV=umd rollup -c --no-freeze   --format umd --name immediate > dist/immediate.umd.js",
+    "build-browser": "IMMEDIATE_ENV=browser rollup -c --no-freeze   --format cjs > dist/immediate.browser.js",
+    "build-node": "IMMEDIATE_ENV=node rollup -c --no-freeze   --format cjs > dist/immediate.node.js"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "@rollup/plugin-babel": "^5.0.3",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "browserify": "^16.5.1",
     "derequire": "^2.1.1",
     "jshint": "^2.5.1",
+    "rollup": "^2.15.0",
     "tap-spec": "^5.0.0",
     "tape": "^4.0.0",
     "uglify-js": "^2.4.13"

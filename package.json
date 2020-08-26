@@ -29,18 +29,22 @@
   "browser": {
     "./lib/nextTick": false
   },
+  "module": "lib/bundle.js",
   "bugs": "https://github.com/calvinmetcalf/immediate/issues",
   "main": "lib/index.js",
   "scripts": {
-    "build": "npm run build-js && npm run uglify",
+    "build": "npm run build-js && npm run uglify && npm run rollup",
     "uglify": "uglifyjs dist/immediate.js -mc > dist/immediate.min.js",
     "build-js": "browserify -s immediate ./lib/index.js | derequire > dist/immediate.js",
-    "test": "jshint lib/*.js && node test/tests.js | tspec"
+    "test": "jshint lib/*.js && node test/tests.js | tspec",
+    "rollup": "rollup -c"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.0.0",
     "browserify": "^16.5.1",
     "derequire": "^2.1.1",
     "jshint": "^2.5.1",
+    "rollup": "^2.26.5",
     "tap-spec": "^5.0.0",
     "tape": "^4.0.0",
     "uglify-js": "^2.4.13"

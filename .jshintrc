@@ -14,5 +14,6 @@
     "trailing": true,
     "undef": true,
     "unused": true,
-    "white": true
+    "white": true,
+    "esversion": 6
 }

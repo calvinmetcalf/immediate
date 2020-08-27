@@ -1,5 +1,5 @@
 var test = require('tape');
-var immediate = require("../lib");
+var immediate = require("..");
 
 test("Handlers do execute", function (t) {
     immediate(function () {

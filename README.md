@@ -10,6 +10,7 @@ then
 
 ```js
 var immediate = require("immediate");
+// import immediate from "immediate"
 
 immediate(function () {
   // this will run soon
